@@ -583,6 +583,9 @@ proc dumpHook*(s: var string, v: object)
 proc dumpHook*(s: var string, v: ref)
 proc dumpHook*[T: distinct](s: var string, v: T)
 
+proc skipHook*[T](v: var T, field: string): bool =
+  false
+
 proc dumpHook*[T: distinct](s: var string, v: T) =
   var x = cast[T.distinctBase](v)
   s.dumpHook(x)
@@ -769,6 +772,8 @@ proc dumpHook*(s: var string, v: object) =
   else:
     # Normal objects.
     for k, e in v.fieldPairs:
+      if skipHook(v, k):
+        continue
       if i > 0:
         s.add ','
       s.dumpKey(k)
