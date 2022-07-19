@@ -772,13 +772,12 @@ proc dumpHook*(s: var string, v: object) =
   else:
     # Normal objects.
     for k, e in v.fieldPairs:
-      if skipHook(v, k):
-        continue
-      if i > 0:
-        s.add ','
-      s.dumpKey(k)
-      s.dumpHook(e)
-      inc i
+      if not skipHook(v, k):
+        if i > 0:
+          s.add ','
+        s.dumpKey(k)
+        s.dumpHook(e)
+        inc i
   s.add '}'
 
 proc dumpHook*[N, T](s: var string, v: array[N, t[T]]) =
